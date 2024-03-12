@@ -26,23 +26,34 @@ def get_user_by_id(db: Session, user_id: int):
     user = db.query(DbUser).filter(DbUser.id == user_id).first()
     # Handle any exceptions
     if not user:
-        raise HTTPException(status_code=404, detail='User not found!')
+        raise HTTPException(status_code=404, detail=f'User with ID: {user_id} not found!')
+    return user
+
+def get_user_by_username(db: Session, username: str):
+    user = db.query(DbUser).filter(DbUser.username == username).first()
+    # Handle any exceptions
+    if not user:
+        raise HTTPException(status_code=404, detail=f'User with username: {username} not found!')
     return user
 
 def update_user(db: Session, user_id: int, request: UserBase):
     user = db.query(DbUser).filter(DbUser.id == user_id)
     # Handle any exceptions
+    if not user.first():
+        raise HTTPException(status_code=404, detail=f'User with ID: {user_id} not found!')
     user.update({
         DbUser.username: request.username,
         DbUser.email: request.email,
         DbUser.password: Hash.bcrypt(request.password)
     })
     db.commit()
-    return 'updated.'
+    return 'Updated.'
 
 def delete_user(db: Session, user_id: int):
     user = db.query(DbUser).filter(DbUser.id == user_id).first()
     # Handle any exceptions
+    if not user:
+        raise HTTPException(status_code=404, detail=f'User with ID: {user_id} not found!')
     db.delete(user)
     db.commit()
     return 'Deleted.'
