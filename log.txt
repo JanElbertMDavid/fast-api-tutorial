@@ -1,0 +1,4 @@
+Test BG task: Test log using BGMyApp: 
+	http://127.0.0.1:3306/dependencies?tag=MyApp&separator=%2A%2A%2A
+MyApp: Today
+	http://127.0.0.1:3306/dependencies?tag=MyApp&message=Today&separator=%2A%2A%2A
